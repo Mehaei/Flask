@@ -1,0 +1,29 @@
+{% macro page(pagination,url) %}
+
+<nav class="">
+        <ul class="pagination" style="position: relative;left: 30%">
+            <li class="page-item"><a class="page-link" href="{{ url_for(url,page=1) }}">首页</a></li>
+            {% if pagination.has_prev %}
+                <li class="page-item"><a class="page-link" href="{{ url_for(url,page=pagination.prev_num) }}">&lt;&lt;</a></li>
+                {% elif pagination.page == 1 %}
+                <li class="page-item"><a class="page-link" href="{{ url_for(url,page=1) }}">&lt;&lt;</a></li>
+            {% endif %}
+            {% for i in pagination.iter_pages(left_edge=0,right_edge=0,left_current=2,right_current=3) %}
+                {% if i == pagination.page  %}
+                    <li class="page-item active"><a class="page-link" href="{{ url_for(url,page=i) }}">{{ i }}</a></li>
+                {% elif i == None %}
+
+                {% elif i != pagination.page %}
+                    <li class="page-item"><a class="page-link" href="{{ url_for(url,page=i) }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if pagination.has_next %}
+                <li class="page-item"><a class="page-link" href="{{ url_for(url,page=pagination.next_num) }}">&gt;&gt;</a></li>
+            {% elif pagination.page == pagination.pages %}
+                <li class="page-item"><a class="page-link" href="{{ url_for(url,page=pagination.pages) }}">&gt;&gt;</a></li>
+            {% endif %}
+            <li class="page-item"><a class="page-link" href="{{ url_for(url,page=pagination.pages) }}">尾页</a></li>
+        </ul>
+ </nav>
+
+{% endmacro %}

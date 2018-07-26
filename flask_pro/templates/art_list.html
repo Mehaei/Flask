@@ -1,0 +1,82 @@
+{% extends 'art_base.html' %}
+
+{% import 'page.html' as pg %}
+{% block content %}
+    <form>
+        <div class="row" style="margin:10px 0px">
+            <div class="col-md-4 offset-md-4" >
+                <select name="types" class="form-control">
+                    <option {% if request.args.get('types') == 'all' %} selected  {% endif %} value="all">全部</option>
+                    <option {% if request.args.get('types') == 'title' %} selected  {% endif %} value="title">标题</option>
+                    <option {% if request.args.get('types') == 'classs' %} selected  {% endif %} value="classs">分类</option>
+                    <option {% if request.args.get('types') == 'addtime' %} selected  {% endif %} value="addtime">创建时间</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    {% if request.args.get('keys') %}
+                        <input name="keys" type="text" class="form-control" value="{{ request.args.get('keys') }}">
+                    {% else %}
+                        <input name="keys" type="text" class="form-control" value="" placeholder="请输入搜索内容">
+                    {% endif %}
+                <span class="input-group-btn">
+                    <button class="btn btn-default glyphicon glyphicon-search">搜索</button>
+                </span>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+        </div>
+    </form>
+
+    <!--获取 遍历一闪-->
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        {{ message }}
+        </div>
+    {% endfor %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>标题</th>
+                <th>分类</th>
+                <th>封面</th>
+                <th>作者</th>
+                <th>发布时间</th>
+                <th>操作</th>
+            </tr>
+            {% for v in pagination.items %}
+            <tr>
+                <td>{{ v.title }}</td>
+                <td>{{ category[v.category] }}</td>
+
+                <td><img src="/static/uploads/{{ v.logo }}" style="width:75px;height:40px" alt=""></td>
+
+                <td>{{ v.user.account }}</td>
+                <td>{{ v.add_time }}</td>
+                <td>
+                    <a href="/art/edit/{{ v.id }}" class="btn btn-sm btn-outline-success">编辑</a>
+                    <a href="/art/del/{{ v.id }}" class="btn btn-sm btn-outline-danger">删除</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </thead>
+    </table>
+    {{ pg.page(pagination,'art_list') }}
+{% endblock %}
+
+{% block css %}
+    <style type="text/css">
+        .table td,
+        .table th{
+            vertical-align: middle;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function(){
+            $("#m2").addClass('active');
+        })
+    </script>
+{% endblock %}
